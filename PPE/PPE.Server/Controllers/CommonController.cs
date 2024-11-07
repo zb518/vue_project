@@ -1,4 +1,7 @@
+using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PPE.Core;
 using PPE.WebCore.Data;
 
 namespace PPE.Server.Controllers;
@@ -7,18 +10,16 @@ namespace PPE.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]/[action]")]
-public class CommonController : ControllerBase
+public class CommonController : BaseController
 {
     private static readonly string[] Summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-    private readonly ILogger<CommonController> _logger;
 
-    public CommonController(ILogger<CommonController> logger, IServiceProvider service)
+    public CommonController(ILogger<CommonController> logger, IServiceProvider service) : base(logger)
     {
-        _logger = logger;
         Service = service;
     }
 
@@ -36,17 +37,36 @@ public class CommonController : ControllerBase
         .ToArray();
     }
 
+    /// <summary>
+    /// 初始化数据
+    /// </summary>
+    /// <returns></returns>
+    [AllowAnonymous]
     [HttpPut]
     public async Task<IActionResult> Initialized()
     {
         try
         {
-            await SeedData.Initialize(Service);
-            return Ok();
+            if (ConfigManager.Builder.Environment.IsDevelopment())
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                await SeedData.Initialize(Service);
+                sw.Stop();
+                var message = $"数据初始化成功，用时 {sw.ElapsedMilliseconds} 毫秒。";
+                Logger.LogInformation(message);
+                if (SeedData.Errors?.Count > 0)
+                {
+                    message = string.Join(",", SeedData.Errors.Select(e => e.Description));
+                    Logger.LogWarning(message);
+                }
+                return Content(message);
+            }
+            return BadRequest();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            Logger.LogError(ex, ex.Message);
             return Ok(ex);
         }
     }

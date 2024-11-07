@@ -17,7 +17,7 @@ const { value, errorMessage } = useField(() => props.name)
         <input class="form-control" v-model="value" :type="type || 'text'" :placeholder="placeholder || ''" :id="id"
             :name="name" />
     </div>
-    <ErrorMessage class="text-danger" :name="name" />
+    <ErrorMessage class="text-danger" name="name" as="span" v-model="errorMessage" />
 </template>
 
 <style lang="scss" scoped></style>

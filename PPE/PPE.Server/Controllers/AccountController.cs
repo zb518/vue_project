@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Options;
 using PPE.BLL;
 using PPE.Core;
 using PPE.DataModel;
+using PPE.Model.Shared;
 using PPE.ModelDto;
 
 namespace PPE.Server.Controllers;
@@ -16,7 +18,7 @@ namespace PPE.Server.Controllers;
 /// </summary>
 [Route("api/[controller]/[action]")]
 [ApiController]
-public class AccountController : ControllerBase
+public class AccountController : BaseController
 {
     /// <summary>
     /// 
@@ -29,9 +31,8 @@ public class AccountController : ControllerBase
     /// <param name="cache"></param>
     /// <param name="bearerTokenOptions"></param>
     /// <param name="timeProvider"></param>
-    public AccountController(ILogger<AccountController> logger, IServiceProvider service, UserManager userManager, SignInManager signInManager, SignLogManager logManager, IDistributedCache cache, IOptionsMonitor<BearerTokenOptions> bearerTokenOptions, TimeProvider timeProvider)
+    public AccountController(ILogger<AccountController> logger, IServiceProvider service, UserManager userManager, SignInManager signInManager, SignLogManager logManager, IDistributedCache cache, IOptionsMonitor<BearerTokenOptions> bearerTokenOptions, TimeProvider timeProvider) : base(logger)
     {
-        Logger = logger;
         Service = service;
         UserManager = userManager;
         SignInManager = signInManager;
@@ -41,7 +42,7 @@ public class AccountController : ControllerBase
         TimeProvider = timeProvider;
     }
 
-    public ILogger<AccountController> Logger { get; }
+
     public IServiceProvider Service { get; }
     public UserManager UserManager { get; }
     public SignInManager SignInManager { get; }
@@ -56,6 +57,7 @@ public class AccountController : ControllerBase
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost]
+    [AllowAnonymous]
     public async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> Login([FromBody] LoginDto dto)
     {
         var result = await SignInAsync(dto);
@@ -63,33 +65,6 @@ public class AccountController : ControllerBase
         return result;
     }
 
-    // /// <summary>
-    // /// 
-    // /// </summary>
-    // /// <param name="dto"></param>
-    // /// <param name="useCookies"></param>
-    // /// <param name="useSessionCookies"></param>
-    // /// <returns></returns>
-    // [HttpPost]
-    // public async Task<Results<Ok<LoginResult>>> Login1([FromBody] LoginDto dto, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies)
-    // {
-    //     var loginResult = new LoginResult();
-    //     var code = await Cache.GetStringAsync(nameof(VerifyCode));
-    //     if (!string.Equals(code, dto.VerifyCode, StringComparison.OrdinalIgnoreCase))
-    //     {
-    //         loginResult.Message = "验证码不正确";
-    //         return Ok(loginResult);
-    //     }
-    //     var user = await UserManager.FindByNameAsync(dto.UserName);
-    //     if (user == null)
-    //     {
-    //         loginResult.Message = "登录账号错误";
-    //         return Ok(loginResult);
-    //     }
-    //     var result = await SignInAsync(dto, useCookies, useSessionCookies);
-    //     loginResult.AccessTokenResponse = result;
-    //     return Ok(loginResult);
-    // }
 
     /// <summary>
     /// 
@@ -98,23 +73,28 @@ public class AccountController : ControllerBase
     /// <returns></returns>
     private async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> SignInAsync(LoginDto dto)
     {
+        var code = await Cache.GetStringAsync(nameof(VerifyCode));
+        if (!string.Equals(code, dto.VerifyCode, StringComparison.OrdinalIgnoreCase))
+        {
+            return TypedResults.Problem("验证码错误", statusCode: StatusCodes.Status200OK);
+        }
         SignInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
         var user = await UserManager.FindByNameAsync(dto.UserName);
         if (user == null)
         {
             await LogManager.CreateAsync(userName: dto.UserName, result: false, description: "账号错误");
-            return TypedResults.Problem("登录信息信息", statusCode: StatusCodes.Status401Unauthorized);
+            return TypedResults.Problem("账号错误", statusCode: StatusCodes.Status200OK);
         }
         var result = await SignInManager.PasswordSignInAsync(user, dto.Password, false, lockoutOnFailure: true);
         if (result.IsNotAllowed)
         {
             await LogManager.CreateAsync(userId: user.Id, userName: user.UserName, realName: user.RealName, result: false, description: "密码错误");
-            return TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
+            return TypedResults.Problem("密码错误", statusCode: StatusCodes.Status200OK);
         }
         if (result.IsLockedOut)
         {
             await LogManager.CreateAsync(userId: user.Id, userName: user.UserName, realName: user.RealName, result: false, description: $"密码错误 {UserManager.Options.Lockout.MaxFailedAccessAttempts} 次，账号锁定。");
-            return TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
+            return TypedResults.Problem($"密码错误 {UserManager.Options.Lockout.MaxFailedAccessAttempts} 次，账号锁定，请稍候。", statusCode: StatusCodes.Status200OK);
         }
         if (result.RequiresTwoFactor)
         {
@@ -126,14 +106,12 @@ public class AccountController : ControllerBase
             {
                 result = await SignInManager.TwoFactorRecoveryCodeSignInAsync(dto.TwoFactorRecoveryCode);
             }
+            else
+            {
+                await LogManager.CreateAsync(userId: user.Id, userName: user.UserName, realName: user.RealName, result: false, description: "需要两种验证");
+                return TypedResults.Problem("需要两种验证", statusCode: StatusCodes.Status200OK);
+            }
         }
-
-        // if (!result.Succeeded)
-        // {
-        //     return TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
-        // }
-
-        // The signInManager already produced the needed response in the form of a cookie or bearer token.
         if (result.Succeeded)
         {
             user.FirstAccess ??= DateTime.Now;
@@ -152,6 +130,7 @@ public class AccountController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [AllowAnonymous]
     public async Task<FileResult> VerifyCode()
     {
         var code = ValidatorCodeHelper.CreateCode();
@@ -171,6 +150,7 @@ public class AccountController : ControllerBase
     /// <param name="refreshRequest"></param>
     /// <returns></returns>
     [HttpPost]
+    [AllowAnonymous]
     public async Task<Results<Ok<AccessTokenResponse>, UnauthorizedHttpResult, SignInHttpResult, ChallengeHttpResult>> Refresh([FromBody] RefreshRequest refreshRequest)
     {
         var refreshTokenProtector = BearerTokenOptions.Get(IdentityConstants.BearerScheme).RefreshTokenProtector;
@@ -190,51 +170,17 @@ public class AccountController : ControllerBase
         return result;
     }
 
-    /// <summary>
-    /// 验证账号
-    /// </summary>
-    /// <param name="vur"></param>
-    /// <returns></returns>
-    [HttpPost]
-    public async Task<bool> ValidateUserNameAsync([FromBody] ValidateUserRequest vur)
-    {
-        if (string.IsNullOrWhiteSpace(vur?.UserName))
-        {
-            return false;
-        }
-        var user = await UserManager.FindByNameAsync(vur.UserName);
-        return user != null;
-    }
 
     /// <summary>
-    /// 验证密码
+    /// 获取登录用户信息
     /// </summary>
-    /// <param name="vpr"></param>
     /// <returns></returns>
-    [HttpPost]
-    public async Task<bool> ValidatePasswordAsync([FromBody] ValidatePasswordRequest vpr)
+    [HttpGet]
+    public IActionResult SignInUser()
     {
-        if (string.IsNullOrWhiteSpace(vpr?.UserName) || string.IsNullOrWhiteSpace(vpr?.Password))
-        {
-            return false;
-        }
-        var user = await UserManager.FindByNameAsync(vpr.UserName);
-        return user != null;
+        var signinUser = UserManager.Identity.GetSignUser(User);
+        return Ok(signinUser);
     }
 
-    /// <summary>
-    /// 验证验证码
-    /// </summary>
-    /// <param name="vvr"></param>
-    /// <returns></returns>
-    [HttpPost]
-    public async Task<bool> ValidateVerifyCodeAsync([FromBody] ValidateVerifyCodeRequtest vvr)
-    {
-        if (string.IsNullOrWhiteSpace(vvr?.VerifyCode))
-        {
-            return false;
-        }
-        var code = await Cache.GetStringAsync(nameof(VerifyCode));
-        return string.Equals(code, vvr.VerifyCode, StringComparison.OrdinalIgnoreCase);
-    }
+
 }

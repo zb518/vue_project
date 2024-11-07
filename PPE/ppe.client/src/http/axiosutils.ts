@@ -13,9 +13,12 @@ const service = axios.create({
  */
 service.interceptors.request.use(
     config => {
-        const token = sessionStorage.getItem("AccessToken");
-        if (token) {
-            config.headers["Authorization"] = `Bearer ${token}`;
+        const tokenJjson = sessionStorage.getItem("Token");
+        if (tokenJjson) {
+            const token = JSON.parse(tokenJjson) as AccessTokenResponse
+            if (token.accessToken) {
+                config.headers["Authorization"] = `Bearer ${token.accessToken}`;
+            }
         }
         return config;
     },
