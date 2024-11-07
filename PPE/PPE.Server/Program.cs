@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -94,17 +95,28 @@ builder.Services.AddIdentityApiEndpoints<Base_User>()
     .AddRoleManager<RoleManager>()
     .AddSignInManager<SignInManager>()
     .AddErrorDescriber<OperationErrorDescriber>()
-    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>();
+    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>().AddApiEndpoints();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    foreach (var version in Enum.GetNames<ApiVersionGroup>())
+    {
+        options.SwaggerDoc(version, new OpenApiInfo
+        {
+            Title = $"PPE {version}",
+            Description = $"PPE API Ver: {version}",
+            Version = version
+        });
+    }
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
     options.SchemaFilter<DefaultValueParameterFileter>();
     options.AddSecurityDefinition("JWTBearer", new OpenApiSecurityScheme()
     {
-        Description = "ÇëÊäÈëToken£¬¸ñÊ½Îª Bearer xxxxxxxx £¨×¢ÒâÖÐ¼ä±ØÐëÓÐ¿Õ¸ñ£©",
+        Description = "è¯·è¾“å…¥Tokenï¼Œæ ¼å¼ä¸º Bearer xxxxxxxx ï¼ˆæ³¨æ„ä¸­é—´å¿…é¡»æœ‰ç©ºæ ¼ï¼‰",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -132,7 +144,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        foreach (var version in Enum.GetNames<ApiVersionGroup>())
+        {
+            options.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"PPE API {version}");
+        }
+    });
 }
 
 app.UseHttpsRedirection();
