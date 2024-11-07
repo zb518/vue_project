@@ -1,2 +1,2 @@
 # vue_project
-vue learn
+client use vue, server use NET CORE API
