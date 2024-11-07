@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LoginComponent from '@/components/account/LoginComponent.vue';
+
 
 </script>
 
@@ -9,9 +11,7 @@
                 <h1 class="card-title">Log in</h1>
             </div>
             <div class="card-body">
-                <form method="post">
-
-                </form>
+                <LoginComponent />
                 <div class="mb-3">
                     <router-link to="/" class="btn btn-primary w-100">
                         <font-awesome-icon icon="fa-solid fa-home"></font-awesome-icon>主页</router-link>

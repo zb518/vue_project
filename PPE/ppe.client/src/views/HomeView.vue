@@ -5,7 +5,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <h1 class="card-title">Home</h1>
+      <h5 class="card-title">Home</h5>
     </div>
     <div class="card-body">
       <h1 class="h1">Home Page</h1>

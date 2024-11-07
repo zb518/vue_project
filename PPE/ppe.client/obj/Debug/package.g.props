@@ -18,6 +18,8 @@
     <PackageJsonDependenciesFortawesomeVueFontawesome Condition="$(PackageJsonDependenciesFortawesomeVueFontawesome) == ''">latest-3</PackageJsonDependenciesFortawesomeVueFontawesome>
     <PackageJsonDependenciesPopperjsCore Condition="$(PackageJsonDependenciesPopperjsCore) == ''">^2.11.8</PackageJsonDependenciesPopperjsCore>
     <PackageJsonDependenciesVeeValidateI18n Condition="$(PackageJsonDependenciesVeeValidateI18n) == ''">^4.14.6</PackageJsonDependenciesVeeValidateI18n>
+    <PackageJsonDependenciesVeeValidateRules Condition="$(PackageJsonDependenciesVeeValidateRules) == ''">^4.14.6</PackageJsonDependenciesVeeValidateRules>
+    <PackageJsonDependenciesVeeValidateYup Condition="$(PackageJsonDependenciesVeeValidateYup) == ''">^4.14.6</PackageJsonDependenciesVeeValidateYup>
     <PackageJsonDependenciesAxios Condition="$(PackageJsonDependenciesAxios) == ''">^1.7.7</PackageJsonDependenciesAxios>
     <PackageJsonDependenciesBootstrap Condition="$(PackageJsonDependenciesBootstrap) == ''">^5.3.3</PackageJsonDependenciesBootstrap>
     <PackageJsonDependenciesJquery Condition="$(PackageJsonDependenciesJquery) == ''">^3.7.1</PackageJsonDependenciesJquery>
@@ -25,6 +27,7 @@
     <PackageJsonDependenciesVeeValidate Condition="$(PackageJsonDependenciesVeeValidate) == ''">^4.14.6</PackageJsonDependenciesVeeValidate>
     <PackageJsonDependenciesVue Condition="$(PackageJsonDependenciesVue) == ''">^3.4.21</PackageJsonDependenciesVue>
     <PackageJsonDependenciesVueRouter Condition="$(PackageJsonDependenciesVueRouter) == ''">^4.3.0</PackageJsonDependenciesVueRouter>
+    <PackageJsonDependenciesYup Condition="$(PackageJsonDependenciesYup) == ''">^1.4.0</PackageJsonDependenciesYup>
     <PackageJsonDevdependenciesRushstackEslintPatch Condition="$(PackageJsonDevdependenciesRushstackEslintPatch) == ''">^1.8.0</PackageJsonDevdependenciesRushstackEslintPatch>
     <PackageJsonDevdependenciesTsconfigNode20 Condition="$(PackageJsonDevdependenciesTsconfigNode20) == ''">^20.1.4</PackageJsonDevdependenciesTsconfigNode20>
     <PackageJsonDevdependenciesTypesNode Condition="$(PackageJsonDevdependenciesTypesNode) == ''">^20.12.5</PackageJsonDevdependenciesTypesNode>

@@ -1,12 +1,14 @@
-using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using PPE.BLL;
 using PPE.Core;
 using PPE.DataModel;
 using PPE.Model.Shared;
 using PPE.WebCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigManager.Builder = builder;
@@ -95,9 +97,15 @@ builder.Services.AddIdentityApiEndpoints<Base_User>()
     .AddRoleManager<RoleManager>()
     .AddSignInManager<SignInManager>()
     .AddErrorDescriber<OperationErrorDescriber>()
-    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>().AddApiEndpoints();
+    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+.AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -159,7 +167,8 @@ app.UseStaticFiles();
 
 app.UseCors();
 
-app.MapSwagger().RequireAuthorization();
+//app.MapSwagger().RequireAuthorization();
+app.UseAuthentication();
 app.UseAuthorization();
 
 //app.MapIdentityApiExt();

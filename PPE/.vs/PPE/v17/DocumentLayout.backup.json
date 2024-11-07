@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "D:\\VS\\PPE\\PPE\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|d:\\vs\\ppe\\ppe\\ppe.server\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|solutionrelative:ppe.server\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|d:\\vs\\ppe\\ppe\\ppe.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|solutionrelative:ppe.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|d:\\vs\\ppe\\ppe\\ppe.server\\ppe.server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|solutionrelative:ppe.server\\ppe.server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|d:\\vs\\ppe\\ppe\\ppe.server\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{54990896-0025-482F-9657-00B6BD2C7A3E}|PPE.Server\\PPE.Server.csproj|solutionrelative:ppe.server\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B8DE128E-8077-461E-BD6C-6E104231497A}|src\\PPE.ModelDto\\PPE.ModelDto.csproj|d:\\vs\\ppe\\ppe\\src\\ppe.modeldto\\account\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8DE128E-8077-461E-BD6C-6E104231497A}|src\\PPE.ModelDto\\PPE.ModelDto.csproj|solutionrelative:src\\ppe.modeldto\\account\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,43 +22,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PPE.Server",
-              "DocumentMoniker": "D:\\VS\\PPE\\PPE\\PPE.Server\\PPE.Server.csproj",
-              "RelativeDocumentMoniker": "PPE.Server\\PPE.Server.csproj",
-              "ToolTip": "D:\\VS\\PPE\\PPE\\PPE.Server\\PPE.Server.csproj",
-              "RelativeToolTip": "PPE.Server\\PPE.Server.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwcAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-11-07T01:30:52.899Z",
+              "DocumentIndex": 2,
+              "Title": "LoginDto.cs",
+              "DocumentMoniker": "D:\\VS\\PPE\\PPE\\src\\PPE.ModelDto\\Account\\LoginDto.cs",
+              "RelativeDocumentMoniker": "src\\PPE.ModelDto\\Account\\LoginDto.cs",
+              "ToolTip": "D:\\VS\\PPE\\PPE\\src\\PPE.ModelDto\\Account\\LoginDto.cs",
+              "RelativeToolTip": "src\\PPE.ModelDto\\Account\\LoginDto.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAmwDcAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-07T06:50:48.029Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\VS\\PPE\\PPE\\PPE.Server\\Program.cs",
               "RelativeDocumentMoniker": "PPE.Server\\Program.cs",
               "ToolTip": "D:\\VS\\PPE\\PPE\\PPE.Server\\Program.cs",
               "RelativeToolTip": "PPE.Server\\Program.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAADwv5gAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAEoAAAAAAAAAAAAcwGoAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-07T01:25:34.642Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "AccountController.cs",
               "DocumentMoniker": "D:\\VS\\PPE\\PPE\\PPE.Server\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "PPE.Server\\Controllers\\AccountController.cs",
               "ToolTip": "D:\\VS\\PPE\\PPE\\PPE.Server\\Controllers\\AccountController.cs",
               "RelativeToolTip": "PPE.Server\\Controllers\\AccountController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAuwKoAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-07T01:25:15.229Z",
               "EditorCaption": ""

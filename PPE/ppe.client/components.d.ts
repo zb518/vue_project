@@ -8,12 +8,16 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     FooterLayout: typeof import('./src/components/Layouts/FooterLayout.vue')['default']
+    GroupInput: typeof import('./src/components/forms/GroupInput.vue')['default']
     HeaderLayout: typeof import('./src/components/Layouts/HeaderLayout.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
     IconDocumentation: typeof import('./src/components/icons/IconDocumentation.vue')['default']
     IconEcosystem: typeof import('./src/components/icons/IconEcosystem.vue')['default']
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
+    InputGroupText: typeof import('./src/components/forms/InputGroupText.vue')['default']
+    InputText: typeof import('./src/components/forms/InputText.vue')['default']
+    LoginComponent: typeof import('./src/components/account/LoginComponent.vue')['default']
     LoginPartial: typeof import('./src/components/Layouts/LoginPartial.vue')['default']
     MainLayout: typeof import('./src/components/Layouts/MainLayout.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
