@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+import HomeComponent from '@/components/HomeComponent.vue';
+
 </script>
 
 <template>
@@ -9,6 +11,7 @@
     </div>
     <div class="card-body">
       <h1 class="h1">Home Page</h1>
+      <HomeComponent />
     </div>
   </div>
 </template>
