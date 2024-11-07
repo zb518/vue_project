@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using PPE.BLL;
+using PPE.Core;
 using PPE.ModelDto;
 
 namespace PPE.Server.Controllers;
@@ -29,24 +30,31 @@ public class AccountController : ControllerBase
     public SignLogManager LogManager { get; }
     public IDistributedCache Cache { get; }
 
+    /// <summary>
+    /// 登录
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <param name="useCookies"></param>
+    /// <param name="useSessionCookies"></param>
+    /// <returns></returns>
     [HttpPost]
-    public async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> Login([FromBody] LoginDto login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies)
+    public async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> Login([FromBody] LoginDto dto, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies)
     {
         var useCookieScheme = (useCookies == true) || (useSessionCookies == true);
         var isPersistent = (useCookies == true) && (useSessionCookies != true);
         SignInManager.AuthenticationScheme = useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
 
-        var result = await SignInManager.PasswordSignInAsync(login.UserName, login.Password, isPersistent, lockoutOnFailure: true);
+        var result = await SignInManager.PasswordSignInAsync(dto.UserName, dto.Password, isPersistent, lockoutOnFailure: true);
 
         if (result.RequiresTwoFactor)
         {
-            if (!string.IsNullOrEmpty(login.TwoFactorCode))
+            if (!string.IsNullOrEmpty(dto.TwoFactorCode))
             {
-                result = await SignInManager.TwoFactorAuthenticatorSignInAsync(login.TwoFactorCode, isPersistent, rememberClient: isPersistent);
+                result = await SignInManager.TwoFactorAuthenticatorSignInAsync(dto.TwoFactorCode, isPersistent, rememberClient: isPersistent);
             }
-            else if (!string.IsNullOrEmpty(login.TwoFactorRecoveryCode))
+            else if (!string.IsNullOrEmpty(dto.TwoFactorRecoveryCode))
             {
-                result = await SignInManager.TwoFactorRecoveryCodeSignInAsync(login.TwoFactorRecoveryCode);
+                result = await SignInManager.TwoFactorRecoveryCodeSignInAsync(dto.TwoFactorRecoveryCode);
             }
         }
 
@@ -57,6 +65,23 @@ public class AccountController : ControllerBase
 
         // The signInManager already produced the needed response in the form of a cookie or bearer token.
         return TypedResults.Empty;
+    }
+
+    /// <summary>
+    /// 生成验证码图片
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<FileResult> VerifyCode()
+    {
+        var code = ValidatorCodeHelper.CreateCode();
+        await Cache.SetStringAsync(nameof(VerifyCode), code, new DistributedCacheEntryOptions
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(5),
+            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(5)
+        });
+        var image = ValidatorCodeHelper.CreatePng(code);
+        return File(image, "image/png");
     }
 
     //[HttpPost]
